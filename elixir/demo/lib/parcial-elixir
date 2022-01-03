@@ -1,0 +1,40 @@
+# Parcial Parte elixir => Catalina Mendizabal
+# Ejercicio 1
+
+defmodule Products do
+
+  defmodule State do
+    defstruct products: %{}, ammount: 0
+  end
+
+  def start() do
+    start(%{"Samsung TV", "Apple Watch"})
+  end
+
+  def start(state) do
+    spawn(fn -> loop(state) end)
+  end
+
+  def init() do
+    loop(%State{})
+  end
+
+  def loop(state) do
+    receive do
+
+      {:visit_product, name, from} ->
+        send(from, :ok)
+        loop(%State{products: name, ammount: state.ammount + 1})
+
+      {:last_n_products, quantity, from} ->
+        values = state.acciones |> Enum.take(quantity)
+        send(from, {:ok, values})
+        loop(state)
+
+      {:prod_freq, from} ->
+        send(from, {:prod_freq, state.ammount})
+        loop(state)
+
+      end
+    end
+  end

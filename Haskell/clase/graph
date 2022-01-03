@@ -1,0 +1,78 @@
+-- data Node a = Node a [Node a] otra manera
+-- type Graph = [(Char, [Char])] 
+-- data Graph a = Graph [a] [(a, a)] 
+
+{- 
+contains :: (Eq a) => [a] -> Bool 
+contains [] = False
+contains l y = [z | z <- l, z == y] /= []
+-}
+
+
+type Graph a = [(a, [a])]
+
+existsNode :: (Eq a) => Graph a -> a -> Bool
+existsNode [] _ = False
+existsNode (x:xs) i
+    | fst x == i = True
+    | otherwise = existsNode xs i
+
+isAdj :: (Eq a) => Graph a -> a -> a -> Bool
+isAdj [] _ _ = False
+isAdj (x:xs) s t
+    | fst x == s = [y | y <- snd x, y == t] /= []
+    | otherwise = isAdj xs s t
+
+getNode :: (Eq a) => Graph a -> a ->  (a, [a])
+getNode [] _ = error "Node not exists"
+getNode (x:xs) n
+    | fst x == n = x
+    | otherwise = getNode xs n
+
+remove :: (Eq a) => Graph a -> a -> Graph a
+remove g i = [z | z <- g, fst z /= i]
+
+removeAdj :: (Eq a) => Graph a -> a -> a -> Graph a
+removeAdj [] _ _ = []
+removeAdj (x:xs) n a
+    | fst x == n = (n, [z | z <- snd x, z /= a]) : xs
+    | otherwise = x : removeAdj xs n a
+
+path :: (Eq a) => Graph a -> a -> a -> [a]
+path [] _ _ = []
+path g s t  -- grafo g => s: source | t: target
+    | null [z | z <- g, fst z == s] = []                                        -- not (existsNode g s) = []
+    | null [z | z <- g, fst z == t] = []                                        -- not (existsNode g t) = []
+    | null adj = []
+    | t `elem` adj = [s, t]                                                     -- isAdj g s t = [s, t]
+    | t `elem` p = p
+    | otherwise = path (map (fst, [z | z <- snd x, z /= f]) g) s t      -- Equivale a (removeAdj g s a) s t  
+    where
+        node = [z | z <- g, fst z == s]
+        adj = snd node
+        f = head adj
+        p = s : path [(\x -> (fst x, [y | y <- snd x, y /= s])) z| z <- g , fst z /= s] f t
+
+{-
+pathAux :: (Eq a) => Graph a -> a -> a -> [a] -> [a] 
+pathAux [] _ _ _ = []
+pathAux g s t p 
+    | isAdj g s t = p ++ [s, t]
+    | contains p 
+-}
+
+
+ -- Applicative es un functor que nos permite convertir un tipo que tiene un contexto a un tipo que no tiene un contexto
+
+{-
+class (Functor f) => Applicative f where
+    pure :: a -> f a 
+    <*> :: f (a -> b) -> f a -> f b 
+
+instance Applicative Maybe where
+    pure = Just
+    Nothing <*> _ = Nothing
+    (Just f) <*> something = fmap f something 
+-}
+
+

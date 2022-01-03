@@ -1,0 +1,57 @@
+#Ejercicio 2 -> Catalina Mendizabal
+
+defmodule Bidding do
+
+  defmodule State do
+    defstruct bids: [], clients: [], current_price: 0
+  end
+
+  defmodule Bid do
+    defstruct bid: 0, client_id: 0, offer: 0
+  end
+
+  defmodule Client do
+    defstruct client_id: 0
+  end
+
+  use GenServe
+
+  def start_link(base_price) do
+    GenServer.start_link(__MODULE__, %State{}, name: __MODULE__)
+  end
+
+  def register(bid , client_id, client_pid) do
+    GenServer.call(__MODULE__, {:create, bid, client_id, client_pid})
+  end
+
+  def make_offer(bid, client_id, offer) do
+    GenServer.call(__MODULE__, {:offer, bid, client_id, offer})
+  end
+
+  @impl true
+  def handle_call({:create, bid, client_id, client_pid}, _from, state) do
+    clients: state.clients
+    new_client = clients ++ [%Client{client_id: client_id}]
+    {:reply, :ok, state}
+  end
+
+  @impl true
+  def handle_call({:offer, bid, client_id, offer}, _from, state) do
+    bids = state.bids
+    check_time_out()
+
+    if(state.current_price < offer) do
+      new_bids = bids ++ [%Bid{bid: bid, client_id: client_id, offer: offer}]
+      new_state = %State{bids: new_bids}
+      {:reply, {:ok, :accepted, offer}, new_state}
+        else
+      {:reply, {:ok, :rejected, offer}, state}
+    end
+
+  end
+
+  def check_time_out() do
+    Process.send_after(self(), :check_timeout, 60 * 1000)
+  end
+
+end

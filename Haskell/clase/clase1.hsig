@@ -1,0 +1,230 @@
+-- succ 9 + max 5 4 + 1 ==> 16
+-- "" -> arreglo de caracteres y '' string
+-- if () then else () 
+-- [] ++ [] -> concatena listas
+-- 'H':"ola mundo" --> concatena un elemento a una lista
+-- !! --> dame el elementp numero tanto
+-- head
+-- last
+-- tail --> sin la cabeza
+-- init --> todo menos el ultimo elemento
+
+-- [x*2 | x <- [1..10]] : numeros pares
+
+-- [x*2 | x <- [1..10]], x /= 5 : condicion
+
+
+factorial :: (Intergal a) => a -> a 
+factorial 0 = 1
+factorial n = n * facttorial(n - 1)
+
+lastElem :: [a] -> a 
+lastElem [] = error "Empty List"
+lastElem [a] = a 
+lastElem (x:xs) = lastElem xs 
+
+first :: (a, b, c) -> a 
+fisrt (a, _, _) = a 
+
+firstLetter :: String -> String 
+firstLetter "" = "Empty String"
+firstLetter s@(x:_) = "The first letter of " ++ s ++ " is " ++ [x] 
+
+compare_ :: (Ord a) => a -> a -> Int 
+compare_ x y
+    | x < y     = -1
+    | x > y     = 1
+    | otherwise = 0
+
+zip :: [a] -> b -> [(a, b)]
+zip _ [] = []
+zip [] _ = []
+zip (x:xs) (y:ys) = (x, y):zip xs ys
+
+quicksort :: (Ord a) => [a] -> [a]
+quicksort [] = []
+quicksort (x:xs) =
+    let smaller = quicksort [a | a <- xs, a <= x]
+        bigger =  quicksort [a | a <- xs, a > x]
+    in smaller ++ [x] ++ bigger
+
+polindrome :: (Ord a) => [a] -> Bool 
+polindrome [] = True 
+polindrome [x] = True 
+polindrome l 
+    | head l == last l == polindrome (init (tail l))
+    | otherwise = False
+
+
+-- Reemplazar el elemento x por el elemento y en la lista
+replace :: (Eq a) => a -> a -> [a] -> [a]
+replace _ _ [] = []
+replace x y (t:ts)
+    | t == x = y: replaceRest
+    | otherwise = t:replaceRest
+    where replaceRest = replace x y ts
+
+
+-- 1) Invertir una lista
+invertir :: [a] -> [a]
+invertir [] = []
+invertir [x] = [x]
+invertir (x:xs) = invertir xs ++ [x]
+
+-- 2) Sumar todos los elementos de una lista
+sumarList :: (Num a) => [a] -> a 
+sumarList [] = error "Lista vacia"
+sumarList [x] = x 
+sumarList (x:xs) = x + sumarList XSkat
+
+-- 3) Obtener el mayor elemento de una lista
+mayorElem :: (Ord a) => [a] -> a  --ord para comparar
+mayorElem [] = error "Lista vacia"
+mayorElem [x] = x 
+mayorElem (x:xs) 
+    | x > mayorResto = x 
+    | otherwise = mayorResto
+    where mayorResto = mayorElem xs 
+
+-- 4) Implementar la funcion fibonacci
+fiboncacci :: Int -> Int 
+fiboncacci 0 = 1
+fiboncacci 1 = 1
+fiboncacci n = fiboncacci (n - 1) + fiboncacci (n - 2)
+
+-- 5) Permutar los valores de una lista, es decir, cambiar el valor de la posicion 1 por la 2, el de la 3 por la 4, etc
+permutar :: [a] -> [a]
+permutar [] = []
+permutar [x] = [x]
+permutar (x:y:xs) = [y, x] ++ permutar xs 
+
+-- 6) Ordenar una lista de tuplas a partir de su primer elemento
+orderTuplas :: (Ord a) => [(a, z)] -> [(a, z)]
+orderTuplas [] = []
+orderTuplas [x] = [x]
+orderTuplas (x:xs) = orderTupla[z | z <- xs, (fst z) <= (fst x)] ++ [x] ++ orderTupla[z | z <- xs, (fst z) > (fst x)] 
+
+-- 7) Determinar si una lista es capicua
+capicua :: (Eq a) => [a] -> Bool 
+capicua [] = True 
+capicua [x] = True 
+capicua (x:xs) = (x = last xs) && (capicua (init xs))
+
+-- 8) Insertar el valor x en la posicion i de una lista
+instertarX :: [a] -> a -> Int -> [a]
+instertarX _ _ 0 = error "n debe ser mayor a 0"
+instertarX [] x _ = [x] 
+instertarX l x 1 = x : l                            -- una lista x y en la pos 1
+instertarX (x:xs) y n = x : instertarX xs y (n - 1)
+
+-- 9) Calcular el tamaño de una lista
+tamaño :: [a] -> Int 
+tamaño [] = 0
+tamaño (x:xs) = 1 + tamaño xs 
+
+-- 10) Determinar cuantas veces se repite un valor x en una lista
+repetido :: (Eq a) => [a] -> a -> Int 
+repetido [] _ = 0
+repetido (x:xs) y
+    | x == y = 1 + repetido xs y
+    | otherwise repetido xs y
+
+-- 11) Determinar si un numero es primo
+primo :: Int -> Bool 
+primo n = [y | y <- [1..n] , mod n y == 0] == [1, n]
+
+-- funcion de orden superior: es aquella funcion que puede recibir una funcion como parametro  
+
+-- 12) Obtener los primeros n numeros primos
+nPrimos :: Int -> [Int]
+nPrimos x = take x [y | y <- [1..], primo y]
+
+-- 13) A partir de una lista con elementos repetidos, retornar el elemento que mas se repite en la lista
+masRepetido :: (Eq a) => [a] -> a 
+masRepetido [] = error "Empty list"
+masRepetido [x] = x 
+masRepetido (x:xs) 
+    | repetido (x:xs) x > repetido (x:xs) masRepetidoXs = x
+    | otherwise masRepetidoXs = masRepetido xs 
+    where masRepetidoXs = masRepetido xs
+
+-- 14) A partir de una lista con elementos repetidos, retornar una lista con todos los elementos sin repeticiones
+sinRepetidos :: (Eq a) => [a] -> [a] 
+sinRepetidos [] = error "Empty list"
+sinRepetidos [x] = x
+sinRepetidos (x:xs) = x : sinRepetidos [z | z <- xs, z /= x]
+
+-- 15) A partir de una lista con elementos repetidos, obtener la lista de tuplas donde el fst 
+--     y en snd sea la cantidad de repeticiones de dicho elemento
+cantidad :: (Eq a) => [a] -> [(a, Int)]
+cantidad [] = []
+cantidad [x] = [(x, 1)]
+cantidad (x:xs) = (x, repetido (x:xs) x) : cantidad [y | y <- xs, y /= x]
+
+-- 16) Agrupar una sublista los valores iguales de una lista
+groupX :: (Eq a) => [a] -> [a]
+groupX [] = []
+groupX l = [y | y <- l, y == head l] : groupX [y | y <- l, y /= head l]
+
+mapeo :: [(Char, Int)] -> [Char] -> [Int]
+mapeo [] _ = []
+mapeo translation source = map getCode source 
+
+getCode:: [(Char,[Int])]->Char->[Int]
+getCode [] _ = []
+getCode (x:xs) c
+      | (fst x == c) = snd x
+      | otherwise = getCode xs c
+
+-- scocci de verga
+
+
+-- Parcial
+{-| Definir el tipo de datos Tree, con datos sólo en las hojas, e implementar la clase Eq 
+-}
+
+data Tree a = Empty | Branch (Tree a) (Tree a) | Leaf a
+
+instance (Eq a) => Eq (Tree a) where
+    Empty == Empty = True
+    Branch l r == Branch l' r' = l == l' && r == r'
+    Leaf a == Leaf b = a == b
+    _ == _ = False
+
+{-| 2- Implementar la generación del árbol de compresión de Huffman, esto implica el análisis
+de repetición de cada letra, y posterior generación del árbol, el cual puede ser generado
+balanceado o no. La que se recibe para generar el árbol es un String ([Char]) 
+>>> definitive "ATA LA VACA A LA ESTACA"
+Node 23 (LeafH ('A',9)) (Node 14 (LeafH (' ',5)) (Node 9 (Node 4 (LeafH ('T',2)) (LeafH ('L',2))) (Node 5 (LeafH ('C',2)) (Node 3 (LeafH ('S',1)) (Node 2 (LeafH ('V',1)) (LeafH ('E',1)))))))
+-}
+
+data HuffmanTree = EmptyTree | Node Int HuffmanTree HuffmanTree | LeafH (Char, Int) deriving (Show)
+
+freq :: [Char] -> [(Char, Int)]
+freq [] = []
+freq [x] = [(x, 1)]
+freq (x:xs) = (x, length [y | y <- x:xs, y == x]) : freq [y | y <- xs, y /= x]
+
+sortTuple :: [(Char, Int)] -> [HuffmanTree]
+sortTuple [] = []
+sortTuple [x] = [LeafH x]
+sortTuple (x:xs) = sortTuple [y | y <- xs, snd y < snd x] ++ [LeafH x] ++ sortTuple [y | y <- xs, snd y >= snd x]
+
+treeBuilder :: [HuffmanTree] -> HuffmanTree
+treeBuilder [] = EmptyTree
+treeBuilder [x] = x
+treeBuilder (x:y:xs) = treeBuilder (sortTreeList (Node (getValue x + getValue y) x y : xs))
+
+sortTreeList :: [HuffmanTree] -> [HuffmanTree]
+sortTreeList [] = []
+sortTreeList [x] = [x]
+sortTreeList (x:xs) = sortTreeList [y | y <- xs, getValue y < getValue x] ++ [x] ++ sortTreeList [y | y <- xs, getValue y >= getValue x]
+
+getValue :: HuffmanTree -> Int 
+getValue EmptyTree = 0
+getValue (LeafH x)= snd x
+getValue (Node x _ _) = x
+
+definitive :: [Char] -> HuffmanTree
+definitive x = treeBuilder (sortTuple (freq x))
+

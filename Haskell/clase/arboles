@@ -1,0 +1,101 @@
+class Functor f where --un tipo se le puede aplicar un map
+    fmap :: (a -> b) -> f a -> f b 
+
+instance Functor_ [] where
+    fmap = map
+
+-- ejemplo
+class Functor_ f where 
+    fmap :: (a -> b) -> f a -> f b -- f(a) me retorna un f(b)
+
+
+data Option a = None | Some a deriving (Show)
+instance Functor Option where 
+    fmap f (None) = None 
+    fmap f (Some a) = Some (f a)
+
+data Tree a = EmptyTree | Branch a (Tree a) (Tree a)
+instance Function Tree where
+    fmap f EmptyTree = EmptyTree
+    fmap f (Branch a left rigth) = Branch (f a) fmap(f left) fmap(f rigth)
+
+add3 :: (Num a) => Tree a -> Tree a 
+add3 = fmap(+ 3)
+
+data Tree k v = EmptyTree | Leaf k v | Branch k v (Tree k v) (Tree k v)
+
+searchTree :: (Ord k) => k -> Tree k v -> v
+searchTree _ EmptyTree = error "Not found"
+searchTree x (Leaf k v) = if x == k then v else error "Not found"
+searchTree x (Branch k v left rigth)
+    | x == v = v
+    | x < k = searchTree x rigth
+    | otherwise = searchTree x left
+
+data BinaryTree a = EmptyBinaryTree | Node a (BinaryTree a) (BinaryTree a) deriving (Show, Eq)
+
+rotateLeft :: BinaryTree a -> BinaryTree a 
+rotateLeft EmptyBinaryTree = EmptyBinaryTree
+rotateLeft (Node a left EmptyBinaryTree) = Node a left EmptyBinaryTree
+rotateLeft (Node a) left (Node c rl rr) =   (Node c (Node a left rl) rr)
+
+rotateRight :: BinaryTree a -> BinaryTree a 
+rotateRight EmptyBinaryTree = EmptyBinaryTree
+rotateRight (Node a left EmptyBinaryTree) r = Node a left EmptyBinaryTree r
+rotateRight (Node a) (Node c ll lr) right =   (Node c (Node a ll r) right)
+
+deepTree :: BinaryTree a -> Int
+deepTree EmptyBinaryTree = 0
+deepTree (Node a l r )
+    | deepL > deepR = 1 + deepL
+    | otherwise = 1 + deepR
+    where deepL = deepTree l
+          deepR = deepTree r 
+
+balanceTree :: BinaryTree a -> BinaryTree a 
+balanceTree EmptyBinaryTree = EmptyBinaryTree
+balanceTree (Node a l r )
+    | (deepL - deepR) > 1 = rotateRight(Node a bl br)
+    | (deepR - deepL) > 1 = rotateLeft(Node a bl br)
+    | otherwise = Node a bl br 
+    where bl = balanceTree l 
+            br = balanceTree r 
+            deepL = deepTree bl 
+            deepR = deepTree br
+
+addNode :: (Ord a) => BinaryTree a -> a ->  BinaryTree a 
+addNode EmptyBinaryTree a = Node a EmptyBinaryTree EmptyBinaryTree
+addNode (Node a left right) x 
+    | a < x = balanceTree (Node a left (addNode right x))
+    | a > x = balanceTree (Node a (addNode left x) right) 
+    | otherwise = Node a left right
+
+countLeaves :: BinaryTree a -> Int 
+countLeaves EmptyBinaryTree = 0
+countLeaves (Node a EmptyBinaryTree EmptyBinaryTree) = 1
+countLeaves (Node a l r) = countLeaves l + countLeaves r 
+
+-- ej 62
+internals :: BinaryTree a -> [a] 
+internals EmptyBinaryTree = []
+internals (Node a l r) = [a] ++ internals l ++ internals r
+
+-- ej 67
+stringToBinaryTree :: String -> BinaryTree a 
+stringToBinaryTree [] = EmptyBinaryTree
+stringToBinaryTree "" = EmptyBinaryTree
+stringToBinaryTree [a] = Node (a EmptyBinaryTree EmptyBinaryTree)
+stringToBinaryTree (x:xs)
+    | x == '(' = x
+    | x == ',' = x
+    | x == ')' = x
+    | otherwise = Node x -- la pincho aca el capo 
+
+
+-- WAWEY HELP
+data BinaryTree bT = EmptyBT | NodeBT bT (BinaryTree bT) (BinaryTree bT) deriving (Show, Eq)
+
+getGistes :: (Ord a) => BinaryTree a -> a  
+getGistes 
+
+getGistesHelper :: (Ord a) => BinaryTree a -> a -> a 

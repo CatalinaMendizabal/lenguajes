@@ -1,0 +1,46 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+-- Parcial Catalina Mendizabal => Parte Haskell
+
+{- 1) Dado el tipo de dato "data Bit = ZERO | ONE", definir la suma binaria. -}
+
+data Bit = ZERO | ONE
+
+{-
+
+binarySum :: (Eq a) => [Bit] -> [Bit] -> [Bit]
+binarySum [] [] = []
+binarySum x [] = x
+binarySum [] x = x
+binarySum (x:xs) (y:ys)
+    | x == ONE && y == ONE = [ONE, ZERO] ++ binarySum xs ys
+    | otherwise = (x + y) : binarySum xs ys
+
+-}
+
+{-2) Definir el tipo de dato TREE (árbol binario con valores solo en las hojas) 
+e implementar la clase Eq -}
+
+data Tree a = Empty | Branch (Tree a) (Tree a) | Leaf a
+
+instance Eq a => Eq (Tree a) where
+    Empty == Empty = True
+    Leaf a == Leaf b = a == b
+    Branch a b == Branch c d = a == c && b == d
+    _ == _ = False
+
+{- 3- A partir del los tipos de dato definido en los ejercicios 1
+y 2, definir una función donde se le pase un Tree y una lista
+de Bit, retornar un String que sea el recorrer el Tree según
+la lista de Bit, donde ZERO es izquierda y ONE es derecha.
+-}
+
+recorrerTree :: (Show a, Eq Bit) => Tree a -> [Bit] -> String
+recorrerTree Empty [] = ""
+recorrerTree (Leaf a) [] = show a
+recorrerTree (Leaf a) (x:xs) = show a ++ recorrerTree (Leaf a) xs
+recorrerTree (Branch l r) (x:xs)
+    | x == ZERO = recorrerTree l xs
+    | x == ONE = recorrerTree r xs
+    | otherwise = recorrerTree l xs ++ recorrerTree r xs

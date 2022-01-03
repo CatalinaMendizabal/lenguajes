@@ -1,0 +1,14 @@
+module EjFinal where
+
+{- Definir el tipo de datos Graph e implementar la clase Eq-}
+type Graph a = [(a, [a])]
+
+instance Eq Graph a where
+    [] == [] = True
+    ((a, b):xs) == ((a1, b1):ys) = a == a1 && b == b1        
+
+{- Implementa el algoritmo de QuickSort utilizando listas por comprensión -}
+quickSort :: (Ord a) => [a] -> [a]
+quickSort [] = []
+quickSort [x] = [x]
+quickSort (x:xs) = quickSort[y | y <- xs, y <= x] ++ [x] ++ quickSort[y | y <- xs, y > x]
